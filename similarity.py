@@ -15,11 +15,14 @@ class Similarity:
 		self.theta = theta
 		self.item_num = 0
 		
-	def change_parameters(alpha, beta, theta):
+	def change_parameters(self, alpha, beta, theta):
 		'''change parameter when doing cross validation'''
 		self.alpha = alpha
 		self.beta = beta
 		self.theta = theta
+
+	def get_parameters(self):
+		return self.alpha, self.beta, self.theta
 
 	def read_data(self, dataframe):
 		'''read in the data and fill the NaN'''
@@ -125,7 +128,7 @@ class Similarity:
 		self.description_result = cosine_similarity(self.description_result, self.description_result)
 		#### price result ####
 		'''self.price_result: [p1, p2, p3, ... , pn]'''
-		self.price_result = [(2*(1.0 / (1+math.exp(-self.beta*(price_list[i]))))-1) for i in range(len(price_list))]
+		self.price_result = [1.0 / (1+math.exp(-self.beta*(price_list[i]))) for i in range(len(price_list))]
 
 		self.item_num = len(price_list)
 		self.item_vector_set = {n:{'title':t, 'description':d, 'price':p} for n,t,d,p in zip(number_list, self.title_result, self.description_result, self.price_result)}
