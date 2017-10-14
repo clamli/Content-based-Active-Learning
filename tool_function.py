@@ -1,3 +1,4 @@
+from matrix_factorization import MatrixFactorization
 import pandas as pd
 
 def parse(path):
@@ -25,34 +26,42 @@ def Score(user_num, sim_set, rMatrix):
 def Probability(score):
 	return 1/(1 + math.exp(-score))
 
-def call_CV(simItem_k, topUser_k, rMatrix_training, item_list, iteration1=10, iteration2=10):
+def call_CV(itemsFrame, simItem_k, topUser_k, K, rMatrix_training, item_list, iteration1=10, iteration2=10, steplen_alpha=0.02, steplen_beta=2e-4, steplen_theta=-0.02):
 	
-
-
-	for # iteration1 #
+	#### Initial parameters and class ####
+	alpha, beta, theta = 1.0, 1e-3, -1.0
+	simClass = Similarity(alpha, beta, theta)
+	simClass.read_data(itemsFrame)
+	mfClass = MatrixFactorization(K)
+	
+	aggr_output_of_cv = {}
+	for i in range(iteration1):
+		print("############################# %dth K-Cross Validation ###############################"%(i))
 
 		#### Modify parameters for each iteration ####
+		alpha = alpha + steplen_alpha
+		beta = beta + steplen_beta
+		theta = theta + steplen_theta
+		simClass.change_parameters(alpha, beta, theta)
 
+		start = 0
+		end = int(len(item_list)/iteration2)
+		RMSE = []
 
-		for # iteration2 #
+		for j in range(iteration2):
 
-		
-
-			#### Split training set and validation set ####
-			start = 0
-			end = int(len(item_list)/10)
-		    rating_martix_lil_CV = rMatrix_training.tolil()
-		    rating_martix_lil_CV[start:end,] = 0
-		    print("rating_martix_lil_CV DONE")
-
-
-
+			#### Split training set and validation set ####	
+			rating_martix_lil_CV = rMatrix_training.tolil()
+			rating_martix_lil_CV[start:end,] = 0
+			tmp = end
+			end = end + (end - start) + 1
+			start = tmp + 1
+			print("rating_martix_lil_CV DONE")
 
 
 		    #### find k similar items for each new item ####
-		    s = Similarity()
-		    s.read_data(itemsFrame)
-		    sims = s.generate_topk_item_similarity(itemsFrame.iloc[start:end,:].loc[:,"asin"].tolist(), simItem_k)
+			
+			sims = simClass.generate_topk_item_similarity(itemsFrame.iloc[start:end,:].loc[:,"asin"].tolist(), simItem_k)
 		    
 		    #### construct new-item similarity dictionary ####
 		    '''
@@ -88,14 +97,14 @@ def call_CV(simItem_k, topUser_k, rMatrix_training, item_list, iteration1=10, it
 
 
 		    ##### Caculate RMESE for each iteration2 #####
-
+			prMatrix = mfClass.matrix_factorization(rating_martix_lil_CV.toarray().tolist())
+			RMSE.append(mfClass.calculate_average_RMSE(rating_martix_lil_CV.toarray(), prMatrix, start, end))
 
 
 		#### Caculate and record average RMESE for each iteration2 ####
-
-
+		aggr_output_of_cv[i] = {'avg_RMSE': sum(RMSE)/len(RMSE), 'alpha': alpha, 'beta': beta, 'theta': theta}
 
 	#### Find best RMSE and best parameters####
-
+	
 
     return # Best parameters, Best RMSE #
