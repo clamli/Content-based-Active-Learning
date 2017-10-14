@@ -28,7 +28,7 @@ class MatrixFactorization:
 				for j in range(len(self.R[i])):
 					if self.R[i][j] > 0:
 						e = e + pow(self.R[i][j] - pR[i][j], 2)
-						for k in range(self.K):
+						for k in range(self.K):       # add regularization
 							e = e + (self.beta/2) * (pow(self.P[i][k], 2) + pow(self.Q[k][j], 2))
 			if e < self.threshold:
 				break
@@ -36,5 +36,15 @@ class MatrixFactorization:
 		return self.P, self.Q, np.dot(self.P, self.Q.T), e
 
 
-	def calculate_RMSE(self, oRate, pRate):
+	def calculate_average_RMSE(self, oRate, pRate, start, end):
+		user_num = oRate.shape[1]
+		e = 0
+		cnt_of_rate = 0
+		for i in range(start, end+1):
+			for j in range(user_num):
+				if oRate[i][j] > 0:
+					e = e + pow(oRate[i][j] - pRate[i][j])
+					cnt_of_rate = cnt_of_rate + 1
+		return e/cnt_of_rate
+
 		
