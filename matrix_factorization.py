@@ -54,21 +54,19 @@ class MatrixFactorization:
             denominatorV = 0
             for i in range(R.shape[0]):
                 denominatorV = denominatorV + np.dot(self.Q[i, :], self.Q[i, :].T)
-            for i in range(R.shape[1]):
-                numeratorVR = np.zeros(self.K)
-                for j in row:
-                    numeratorVR = numeratorVR + R[j, i]*self.Q[j, :]
-                self.P[i, :] = numeratorVR / denominatorV
+            numeratorVR = np.zeros(R.shape[1], self.K)
+            for i,j in zip(row, col):
+                numeratorVR[j] = numeratorVR[j] + self.Q[i, :]*R[i, j]
+            self.P = numeratorVR / denominatorV
 
             #### Item Part ####
             denominatorU = 0
             for i in range(R.shape[1]):
                 denominatorU = denominatorU + np.dot(self.P[i, :], self.P[i, :].T)
-            for i in range(R.shape[0]):
-                numeratorUR = np.zeros(self.K)
-                for j in col:
-                    numeratorUR = numeratorUR + R[i, j]*self.P[j, :]
-                self.Q[i, :] = numeratorUR / denominatorU
+            numeratorUR = np.zeros(R.shape[0], self.K)
+            for i,j in zip(row, col):
+               numeratorVR[i] = numeratorVR[i] + self.P[j, :]*R[i, j]
+            self.Q = numeratorUR / denominatorU
 
             #### Calculate Predicted Matrix ####
             pR = np.dot(self.Q, self.P.T)
