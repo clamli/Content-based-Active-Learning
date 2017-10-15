@@ -21,8 +21,8 @@ itemsFrame = getDF('./item_metadata/meta_Computers.json')
 itemsFrame['description'].fillna("", inplace=True)
 itemsFrame['title'].fillna("", inplace=True)
 itemsFrame['price'].fillna(0, inplace=True)
-#### drop items which haven't received any ratings ####
-for index, row in itemsFrame.iterrows():   # 获取每行的index、row
+#### drop items without any ratings ####
+for index, row in itemsFrame.iterrows():
     if row["asin"] not in ratingsFrame.loc[:,"item"].tolist():
         itemsFrame.drop(index, inplace = True)
 itemsFrame.reset_index(drop=True, inplace = True)  
@@ -77,8 +77,10 @@ rating_martix_csr = rating_martix_coo.tocsr()
 
 ####################################################################################
 ''' Step 5: Split Dataset into Training and Test'''
-rMatrix_training set
-rMatrix_test set
+start = 0
+end = int(rating_martix_csr.shape[0] * 0.7)
+rMatrix_training = rating_martix_csr[start:end,]
+#rMatrix_test set
 ####################################################################################
 
 ####################################################################################
@@ -92,16 +94,18 @@ theta = -1.0
 simClass = Similarity(alpha, beta, theta)
 simClass.read_data(itemsFrame)
 mfClass = MatrixFactorization(K)
-model, optim_ind = call_CV(simClass, mfClass, itemsFrame, simItem_k, topUser_k, rMatrix_training, item_list)
+model, optim_ind = call_CV(simClass, mfClass, simItem_k, topUser_k, rMatrix_training, item_list[start:end])
 ####################################################################################
 
 ####################################################################################
 ''' Step 7: Use Optimum Parameters on Test Datast''' 
+start = 0
+end = int(rating_martix_csr.shape[0] * 0.3)
 alpha = model[optim_ind]['alpha']
 beta = model[optim_ind]['beta']
 theta = model[optim_ind]['theta']
 simClass.change_parameters(alpha, beta, theta)
-tRMSE = active_learning_process(simClass, mfClass, rMatrix_training, rating_martix_lil, simItem_k, topUser_k, item_list, start, end)
+tRMSE = active_learning_process(simClass, mfClass, rating_martix_csr, simItem_k, topUser_k, item_list, start, end)
 ####################################################################################
 
 ####################################################################################
