@@ -99,8 +99,8 @@ model, optim_ind = call_CV(simClass, mfClass, simItem_k, topUser_k, rMatrix_trai
 
 ####################################################################################
 ''' Step 7: Use Optimum Parameters on Test Datast''' 
-start = 0
-end = int(rating_martix_csr.shape[0] * 0.3)
+start = int(rating_martix_csr.shape[0] * 0.7)
+end = rating_martix_csr.shape[0]
 alpha = model[optim_ind]['alpha']
 beta = model[optim_ind]['beta']
 theta = model[optim_ind]['theta']
