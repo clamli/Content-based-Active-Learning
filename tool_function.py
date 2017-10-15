@@ -76,7 +76,7 @@ def active_learning_process(simClass, mfClass, rMatrix, simItem_k, topUser_k, it
 	#### find k similar items for each new item ####
 	print("begin")
 	newuser_asin = item_list[start:end]	
-	sims = simClass.generate_topk_item_similarity(newuser_asin, simItem_k)
+	sims = simClass.generate_topk_item_similarity(newuser_asin, simItem_k, item_list)
 
 	#### construct new-item similarity dictionary ####
 	'''
