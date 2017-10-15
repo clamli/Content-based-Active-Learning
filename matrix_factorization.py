@@ -54,7 +54,7 @@ class MatrixFactorization:
             denominatorV = 0
             for i in range(R.shape[0]):
                 denominatorV = denominatorV + np.dot(self.Q[i, :], self.Q[i, :].T)
-            numeratorVR = np.zeros(R.shape[1], self.K)
+            numeratorVR = np.zeros((R.shape[1], self.K))
             for i,j in zip(row, col):
                 numeratorVR[j] = numeratorVR[j] + self.Q[i, :]*R[i, j]
             self.P = numeratorVR / denominatorV
@@ -63,7 +63,7 @@ class MatrixFactorization:
             denominatorU = 0
             for i in range(R.shape[1]):
                 denominatorU = denominatorU + np.dot(self.P[i, :], self.P[i, :].T)
-            numeratorUR = np.zeros(R.shape[0], self.K)
+            numeratorUR = np.zeros((R.shape[0], self.K))
             for i,j in zip(row, col):
                numeratorVR[i] = numeratorVR[i] + self.P[j, :]*R[i, j]
             self.Q = numeratorUR / denominatorU
