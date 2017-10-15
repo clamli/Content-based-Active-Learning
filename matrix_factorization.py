@@ -77,10 +77,11 @@ class MatrixFactorization:
                 e = e + pow(R[i,j] - pR[i,j], 2)
                 for k in range(self.K):       # add regularization
                     e = e + (self.beta/2) * (pow(self.P[j][k], 2) + pow(self.Q[i][k], 2))
+            e = math.sqrt(e)
             error_list.append(e)
 
             #### Judge if small than threshold ###
-            if math.sqrt(e) < self.threshold:
+            if e < self.threshold:
                 break
 
         #### Plot RMSE picture ####
@@ -101,6 +102,6 @@ class MatrixFactorization:
         for i in range(start, end+1):
             for j in range(user_num):
                 if oRate[i][j] > 0:
-                    e = e + pow(oRate[i][j] - pRate[i][j])
+                    e = e + pow(oRate[i][j] - pRate[i][j], 2)
                     cnt_of_rate = cnt_of_rate + 1
         return math.sqrt(e/cnt_of_rate)
