@@ -45,6 +45,7 @@ def call_CV(simClass, mfClass, simItem_k, topUser_k, rMatrix_training, item_list
 		start = 0
 		end = int(rMatrix_training.shape[0]/iteration2)
 		RMSE = []
+
 		#### CV iteration ####
 		for j in range(iteration2):
 			print("%d-fold> "%j)
@@ -55,7 +56,6 @@ def call_CV(simClass, mfClass, simItem_k, topUser_k, rMatrix_training, item_list
 			end = end + (end - start)
 			start = tmp
 			
-		
 		#### Caculate and record average RMESE for each iteration2 ####
 		aggr_output_of_cv[i] = {'avg_RMSE': sum(RMSE)/len(RMSE), 'alpha': alpha, 'beta': beta, 'theta': theta}
 		print(aggr_output_of_cv[i])
@@ -74,7 +74,8 @@ def active_learning_process(simClass, mfClass, rMatrix, simItem_k, topUser_k, it
 	print("rating_martix_expanded_CV DONE")
 
 	#### find k similar items for each new item ####
-	newuser_asin = item_list[start:end]		
+	print("begin")
+	newuser_asin = item_list[start:end]	
 	sims = simClass.generate_topk_item_similarity(newuser_asin, simItem_k)
 
 	#### construct new-item similarity dictionary ####
