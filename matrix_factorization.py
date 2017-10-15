@@ -15,6 +15,7 @@ class MatrixFactorization:
         self.P = np.random.rand(R.shape[1], self.K)         # user latent factor
         self.Q = np.random.rand(R.shape[0], self.K).T       # item latent factor 
         print("MF iterations")
+        error_list = []
         for step in range(self.steps):
             print(step)
             x = sparse.find(R)
@@ -38,6 +39,7 @@ class MatrixFactorization:
                     e = e + (self.beta/2) * (pow(self.P[j][k], 2) + pow(self.Q[k][i], 2))
                 cnt = cnt + 1
             e = math.sqrt(e/cnt)
+            error_list.append(e)
             if e < self.threshold:
                 break
         self.Q = self.Q.T
@@ -50,7 +52,7 @@ class MatrixFactorization:
         plt.ylabel('RMSE value')
         plt.plot(error_list)
         plt.show()
-        
+
         return np.dot(self.Q, self.P.T)
 
 
