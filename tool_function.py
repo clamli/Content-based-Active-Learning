@@ -1,5 +1,3 @@
-from matrix_factorization import MatrixFactorization
-from similarity import Similarity
 from scipy import sparse
 import pandas as pd
 
@@ -66,7 +64,7 @@ def call_CV(simClass, mfClass, simItem_k, topUser_k, rMatrix_training, item_list
 	avg_rmse_lst = [aggr_output_of_cv[i]['avg_RMSE'] for i in aggr_output_of_cv]
 	index = avg_rmse_lst.index(max(avg_rmse_lst))
 
-    return aggr_output_of_cv, index
+	return aggr_output_of_cv, index
 
 def active_learning_process(simClass, mfClass, rMatrix, simItem_k, topUser_k, item_list, start, end):
 	
@@ -80,20 +78,20 @@ def active_learning_process(simClass, mfClass, rMatrix, simItem_k, topUser_k, it
 	sims = simClass.generate_topk_item_similarity(newuser_asin, simItem_k)
 
 	#### construct new-item similarity dictionary ####
-		    '''
-			    sims_indexed: {
-					'ITEM0001': {
-						'ITEM0005': s1
-						'ITEM0006': s2
-						...
-					}
-					'ITEM0002': {
-						'ITEM0008': s3
-						...
-					}
-					...
-			    }
-			'''
+	'''
+	    sims_indexed: {
+			'ITEM0001': {
+				'ITEM0005': s1
+				'ITEM0006': s2
+				...
+			}
+			'ITEM0002': {
+				'ITEM0008': s3
+				...
+			}
+			...
+	    }
+	'''
 	sims_indexed = {}
 	for item in sims:
 		sims_indexed[item] = {}

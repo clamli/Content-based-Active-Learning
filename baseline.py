@@ -1,4 +1,5 @@
 ################################# 2017.10.14 #######################################
+''' Step 0: Import Package '''
 import pandas as pd
 import numpy as np 
 import math
@@ -6,13 +7,16 @@ import random
 from subprocess import check_output
 from scipy.sparse import coo_matrix
 print(check_output(["dir", "."], shell=True).decode("utf8"))
-import tool_function
+import tool_function as tf
+from similarity import Similarity
+from matrix_factorization import MatrixFactorization
+####################################################################################
 
 ####################################################################################
 ''' Step 1: Data Input '''
 #### Load in ratings data & meta_item data ####
 ratingsFrame = pd.read_csv('./user_ratings/ratings_Computers.csv')
-itemsFrame = getDF('./item_metadata/meta_Computers.json')
+itemsFrame = tf.getDF('./item_metadata/meta_Computers.json')
 ####################################################################################
 
 ####################################################################################
@@ -62,14 +66,14 @@ col = []
 rating_data = []
 itemNum = 0
 for item in items:
-    item_list.append(item)
-    for user in items[item]:
-        if user not in user_list:
-            user_list.append(user)
-        row.append(itemNum)
-        col.append(user_list.index(user))
-        rating_data.append(items[item][user])
-    itemNum += 1
+	item_list.append(item)
+	for user in items[item]:
+		if user not in user_list:
+			user_list.append(user)
+		row.append(itemNum)
+		col.append(user_list.index(user))
+		rating_data.append(items[item][user])
+	itemNum += 1
 rating_martix_coo = coo_matrix((rating_data, (row, col)), shape=(itemsFrame.shape[0], len(user_list)))
 rating_martix_csc = rating_martix_coo.tocsc()
 rating_martix_csr = rating_martix_coo.tocsr()
@@ -94,7 +98,7 @@ theta = -1.0
 simClass = Similarity(alpha, beta, theta)
 simClass.read_data(itemsFrame)
 mfClass = MatrixFactorization(K)
-model, optim_ind = call_CV(simClass, mfClass, simItem_k, topUser_k, rMatrix_training, item_list[start:end])
+model, optim_ind = tf.call_CV(simClass, mfClass, simItem_k, topUser_k, rMatrix_training, item_list[start:end])
 ####################################################################################
 
 ####################################################################################
