@@ -1,5 +1,6 @@
 import numpy as np
 import math
+import matplotlib.pyplot as plt
 
 class MatrixFactorization:
     def __init__(self, K, steps=5000, alpha=0.0002, beta=0.02, threshold=0.001):
@@ -44,6 +45,7 @@ class MatrixFactorization:
         self.P = np.random.rand(R.shape[1], self.K)         # user latent factor
         self.Q = np.random.rand(R.shape[0], self.K)         # item latent factor 
         print("MF iterations")
+        error_list = []
         for step in range(self.steps):
             print(step)
             x = sparse.find(R)
@@ -75,10 +77,19 @@ class MatrixFactorization:
                 e = e + pow(R[i,j] - pR[i,j], 2)
                 for k in range(self.K):       # add regularization
                     e = e + (self.beta/2) * (pow(self.P[j][k], 2) + pow(self.Q[i][k], 2))
+            error_list.append(e)
 
             #### Judge if small than threshold ###
             if math.sqrt(e) < self.threshold:
                 break
+
+        #### Plot RMSE picture ####
+        plt.figure(1) # 创建图表1
+        plt.title('RMSE for each iteration')
+        plt.xlabel('Iteration') 
+        plt.ylabel('RMSE value')
+        plt.plot(error_list)
+        plt.show()
 
         return np.dot(self.Q, self.P.T)
 
