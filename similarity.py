@@ -172,7 +172,7 @@ class Similarity:
 	# 	else:
 	# 		return dot_product / ((normA*normB)**0.5)
 
-	def generate_topk_item_similarity(self, new_asin, k):
+	def generate_topk_item_similarity(self, new_asin, k, target_user_list):
 		''' return cosine similarity matrix
 		Input:
 			k: int value
@@ -205,7 +205,7 @@ class Similarity:
 		if k > self.item_num:
 			k = self.item_num
 
-		train_item_vec_set = {n:self.data.loc[self.data['asin']==n].index[0] for n in self.item_vector_set.keys() if n not in new_asin}
+		train_item_vec_set = {n:self.data.loc[self.data['asin']==n].index[0] for n in target_user_list if n not in new_asin}
 		new_item_vec_set = {n:self.item_vector_set[n] for n in new_asin}
 
 		ret_k_similarities_dict = {}
