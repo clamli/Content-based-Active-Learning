@@ -41,6 +41,16 @@ class MatrixFactorization:
             if e < self.threshold:
                 break
         self.Q = self.Q.T
+
+
+        #### Plot RMSE picture ####
+        plt.figure(1) # 创建图表1
+        plt.title('RMSE for each iteration')
+        plt.xlabel('Iteration') 
+        plt.ylabel('RMSE value')
+        plt.plot(error_list)
+        plt.show()
+        
         return np.dot(self.Q, self.P.T)
 
 
