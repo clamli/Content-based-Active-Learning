@@ -10,8 +10,8 @@ class MatrixFactorization:
         self.threshold = threshold                     # error threshold
 
     def matrix_factorization(self, R):
-        self.P = np.random.rand(R.shape[1], K)         # user latent factor
-        self.Q = np.random.rand(R.shape[0], K).T       # item latent factor 
+        self.P = np.random.rand(R.shape[1], self.K)         # user latent factor
+        self.Q = np.random.rand(R.shape[0], self.K).T       # item latent factor 
         print("MF iterations")
         for step in range(self.steps):
             print(step)
