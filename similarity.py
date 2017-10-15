@@ -221,30 +221,3 @@ class Similarity:
 			ret_k_similarities_dict[new_key] = ret_k_similarities_dict_one
 
 		return ret_k_similarities_dict
-
-
-		
-
-
-	
-				
-
-
-
-
-
-
-
-		
-
-
-
-
-
-
-
-
-
-
-
-

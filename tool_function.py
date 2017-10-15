@@ -1,4 +1,6 @@
 from matrix_factorization import MatrixFactorization
+from similarity import Similarity
+from scipy import sparse
 import pandas as pd
 
 def parse(path):
@@ -88,15 +90,34 @@ def call_CV(itemsFrame, simItem_k, topUser_k, K, rMatrix_training, item_list, it
 			#### Calculate Propability for each new item #### 
 			for item in sims_indexed:    
 				user_probability = {}
-				for userNum in range(rMatrix_training.shape[1]):
-					user_probability[userNum] = Probability(Score(userNum, sims_indexed[item]))
+				print(i)
+				i += 1
+				sim_items_current = ()
+				for item_sim in sims_indexed[item]:
+					sim_items_current += (item_sim, )
+				users_rated_sims = sparse.find(rMatrix_training[sim_items_current,:])[1]
+				users_rated_sims = list(set(users_rated_sims))
+				for userNum in users_rated_sims:
+					user_probability[userNum] = Probability(Score(userNum, sims_indexed[item])) 
 				user_probability = sorted(user_probability.items(), key=lambda d:d[1], reverse = True)
+				
+				### when related users are less than k, randomly fill users into top k users###
+				random_fill = True
+				if random_fill == True:
+					if(topUser_k > len(user_probability)):
+						while(len(user_probability) != topUser_k):
+							filler = (int(rMatrix_training.shape[1] * random.random()), 0)
+							for user_possible in user_probability:
+								if filler[0] == user_possible[0]:
+									filler = (int(rMatrix_training.shape[1] * random.random()), 0)
+							user_probability.append(filler)
+				
 				for top in range(topUser_k):    
 					rating_martix_lil_CV[item_list.index(item), user_probability[top][0]] = \
 						rMatrix_training[item_list.index(item), user_probability[top][0]]
 
 
-		    ##### Caculate RMESE for each iteration2 #####
+		    ##### Caculate RMSE for each iteration2 #####
 			prMatrix = mfClass.matrix_factorization(rating_martix_lil_CV.toarray().tolist())
 			RMSE.append(mfClass.calculate_average_RMSE(rating_martix_lil_CV.toarray(), prMatrix, start, end))
 
