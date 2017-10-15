@@ -6,7 +6,7 @@ import random
 from subprocess import check_output
 from scipy.sparse import coo_matrix
 print(check_output(["dir", "."], shell=True).decode("utf8"))
-import read_tool
+import tool_function
 
 ####################################################################################
 ''' Step 1: Data Input '''
@@ -76,12 +76,35 @@ rating_martix_csr = rating_martix_coo.tocsr()
 ####################################################################################
 
 ####################################################################################
-''' Step 5: Cross Validation '''
-train set
-test set
+''' Step 5: Split Dataset into Training and Test'''
+rMatrix_training set
+rMatrix_test set
 ####################################################################################
 
 ####################################################################################
-''' Step 6: Plot Result of Baseline '''
+''' Step 6: Cross Validation '''
+simItem_k = 6             # top K similar item to the new item
+topUser_k = 15            # top K users to recommender the new item for ratings
+K = 20					  # length of user profile and item profile when doing Matrix Factorization
+alpha = 1.0
+beta = 1e-3
+theta = -1.0
+simClass = Similarity(alpha, beta, theta)
+simClass.read_data(itemsFrame)
+mfClass = MatrixFactorization(K)
+model, optim_ind = call_CV(simClass, mfClass, itemsFrame, simItem_k, topUser_k, rMatrix_training, item_list)
+####################################################################################
+
+####################################################################################
+''' Step 7: Use Optimum Parameters on Test Datast''' 
+alpha = model[optim_ind]['alpha']
+beta = model[optim_ind]['beta']
+theta = model[optim_ind]['theta']
+simClass.change_parameters(alpha, beta, theta)
+tRMSE = active_learning_process(simClass, mfClass, rMatrix_training, rating_martix_lil, simItem_k, topUser_k, item_list, start, end)
+####################################################################################
+
+####################################################################################
+''' Step 8: Plot Result of Baseline '''
 
 ####################################################################################
