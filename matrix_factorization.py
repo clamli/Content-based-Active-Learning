@@ -67,7 +67,7 @@ class MatrixFactorization:
                 denominatorU = denominatorU + np.dot(self.P[i, :], self.P[i, :].T)
             numeratorUR = np.zeros((R.shape[0], self.K))
             for i,j in zip(row, col):
-               numeratorVR[i] = numeratorVR[i] + self.P[j, :]*R[i, j]
+               numeratorUR[i] = numeratorUR[i] + self.P[j, :]*R[i, j]
             self.Q = numeratorUR / denominatorU
 
             #### Calculate Predicted Matrix ####
