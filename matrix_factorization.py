@@ -52,9 +52,9 @@ class MatrixFactorization:
 
             #### User Part ####
             denominatorV = 0
-            for i in R.shape[0]:
+            for i in range(R.shape[0]):
                 denominatorV = denominatorV + np.dot(self.Q[i, :], self.Q[i, :].T)
-            for i in R.shape[1]:
+            for i in range(R.shape[1]):
                 numeratorVR = np.zeros(self.K)
                 for j in row:
                     numeratorVR = numeratorVR + R[j, i]*self.Q[j, :]
@@ -62,9 +62,9 @@ class MatrixFactorization:
 
             #### Item Part ####
             denominatorU = 0
-            for i in R.shape[1]:
+            for i in range(R.shape[1]):
                 denominatorU = denominatorU + np.dot(self.P[i, :], self.P[i, :].T)
-            for i in R.shape[0]:
+            for i in range(R.shape[0]):
                 numeratorUR = np.zeros(self.K)
                 for j in col:
                     numeratorUR = numeratorUR + R[i, j]*self.P[j, :]
