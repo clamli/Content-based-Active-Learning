@@ -23,9 +23,9 @@ class MatrixFactorization:
             col = x[1]
             for i,j in zip(row, col):
                 # eij_2 = pow(R[i,j] - np.dot(self.P[j, :], self.Q[i, :].T), 2) + (self.beta/2) * (sum(pow(self.P[j, :], 2)) + sum(pow(self.Q[i, :], 2)))
-                # eij = math.sqrt(eij_2)
-                self.P[j, :] = self.P[j, :] + self.alpha * (2 * self.Q[i, :] - self.beta * self.P[j, :])
-                self.Q[i, :] = self.Q[i, :] + self.alpha * (2 * self.P[j, :] - self.beta * self.Q[i, :])
+                eij = R[i,j] - np.dot(self.P[j, :], self.Q[i, :].T)
+                self.P[j, :] = self.P[j, :] + self.alpha * (2 * eij * self.Q[i, :] - self.beta * self.P[j, :])
+                self.Q[i, :] = self.Q[i, :] + self.alpha * (2 * eij * self.P[j, :] - self.beta * self.Q[i, :])
             pR = np.dot(self.Q, self.P.T)
             e = 0
             for i,j in zip(row,col):
