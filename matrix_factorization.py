@@ -13,7 +13,7 @@ class MatrixFactorization:
 
     def matrix_factorization(self, R):
         self.P = np.random.rand(R.shape[1], self.K)         # user latent factor
-        self.Q = np.random.rand(R.shape[0], self.K).T       # item latent factor 
+        self.Q = np.random.rand(R.shape[0], self.K)         # item latent factor 
         print("MF iterations")
         error_list = []
         for step in range(self.steps):
@@ -21,29 +21,21 @@ class MatrixFactorization:
             x = sparse.find(R)
             row = x[0]
             col = x[1]
-#             print(row)
-#             print(col)
             for i,j in zip(row, col):
-#                 print(i)
-#                 print(j)
-                eij = R[i,j] - np.dot(self.P[j, :], self.Q[:, i])
-                for k in range(self.K):
-                    self.P[j][k] = self.P[j][k] + self.alpha * (2 * eij * self.Q[k][i] - self.beta * self.P[j][k])
-                    self.Q[k][i] = self.Q[k][i] + self.alpha * (2 * eij * self.P[j][k] - self.beta * self.Q[k][i])
-            pR = np.dot(self.P, self.Q).T
+                eij_2 = pow(R[i,j] - np.dot(self.P[j, :], self.Q[i, :].T), 2) + (self.beta/2) * (sum(pow(self.P[j, :], 2)) + sum(pow(self.Q[i, :], 2)))
+                eij = math.sqrt(eij_2)
+                self.P[j, :] = self.P[j, :] + self.alpha * (2 * eij * self.Q[i, :] - self.beta * self.P[j, :])
+                self.Q[i, :] = self.Q[i, :] + self.alpha * (2 * eij * self.P[j, :] - self.beta * self.Q[i, :])
+            pR = np.dot(self.Q, self.P.T)
             e = 0
             cnt = 0
             for i,j in zip(row,col):
                 e = e + pow(R[i,j] - pR[i,j], 2)
-                for k in range(self.K):       # add regularization
-                    e = e + (self.beta/2) * (pow(self.P[j][k], 2) + pow(self.Q[k][i], 2))
                 cnt = cnt + 1
             e = math.sqrt(e/cnt)
             error_list.append(e)
             if e < self.threshold:
                 break
-        self.Q = self.Q.T
-
 
         #### Plot RMSE picture ####
         plt.figure(1) # 创建图表1
