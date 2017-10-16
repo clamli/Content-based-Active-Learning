@@ -35,8 +35,8 @@ class MatrixFactorization:
             cnt = 0
             for i,j in zip(row,col):
                 e = e + pow(R[i,j] - pR[i,j], 2)
-                # for k in range(self.K):       # add regularization
-                #     e = e + (self.beta/2) * (pow(self.P[j][k], 2) + pow(self.Q[k][i], 2))
+                for k in range(self.K):       # add regularization
+                    e = e + (self.beta/2) * (pow(self.P[j][k], 2) + pow(self.Q[k][i], 2))
                 cnt = cnt + 1
             e = math.sqrt(e/cnt)
             error_list.append(e)
