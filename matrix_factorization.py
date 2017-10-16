@@ -124,11 +124,11 @@ class MatrixFactorization:
             col = x[1]                 # user
 
             #### User Part ####
-            denominatorV = np.dot(self.Q.T, self.Q, self.P.T).T + 1e-9   # u*k
+            denominatorV = np.dot(np.dot(self.Q.T, self.Q), self.P.T).T + 1e-9   # u*k
             self.P = self.P * (R.T*self.Q) / denominatorV
 
             #### Item Part ####
-            denominatorU = np.dot(self.P.T, self.P, self.Q.T).T + 1e-9   # i*k
+            denominatorU = np.dot(np.dot(self.P.T, self.P), self.Q.T).T + 1e-9   # i*k
             self.Q = self.Q * (R*self.P) / denominatorU
 
             #### Calculate Predicted Matrix ####
@@ -156,13 +156,13 @@ class MatrixFactorization:
         plt.show()
 
         return np.dot(self.Q, self.P.T)
-        
+
 
     def calculate_average_RMSE(self, oRate, pRate, start, end):
         user_num = oRate.shape[1]
         e = 0
         cnt_of_rate = 0
-        for i in range(start, end+1):
+        for i in range(start, end):
             for j in range(user_num):
                 if oRate[i][j] > 0:
                     e = e + pow(oRate[i][j] - pRate[i][j], 2)
