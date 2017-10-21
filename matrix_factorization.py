@@ -1,6 +1,7 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
+from scipy.sparse import find
 
 class MatrixFactorization:
     def __init__(self, K, steps=5000, alpha=0.0002, beta=0.02, threshold=0.001):
@@ -18,7 +19,7 @@ class MatrixFactorization:
         error_list = []
         for step in range(self.steps):
             print(step)
-            x = sparse.find(R)
+            x = find(R)
             row = x[0]
             col = x[1]
             for i,j in zip(row, col):
@@ -53,7 +54,7 @@ class MatrixFactorization:
         error_list = []
         for step in range(self.steps):
             print(step)
-            x = sparse.find(R)
+            x = find(R)
             row = x[0]                 # item
             col = x[1]                 # user
 
@@ -109,7 +110,7 @@ class MatrixFactorization:
         error_list = []
         for step in range(self.steps):
             print(step)
-            x = sparse.find(R)
+            x = find(R)
             row = x[0]                 # item
             col = x[1]                 # user
 
