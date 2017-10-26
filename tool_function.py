@@ -50,44 +50,6 @@ def call_CV(simClass, simItem_k, topUser_k, itemsFrame, ratingsFrame, users_rati
     avg_rmse_lst = [aggr_output_of_cv[i]['avg_RMSE'] for i in aggr_output_of_cv]
     index = avg_rmse_lst.index(min(avg_rmse_lst))
 
-    return aggr_output_of_cv, indexdef call_CV(simClass, simItem_k, topUser_k, itemsFrame, ratingsFrame, users_rating,\
-            iteration1=20, iteration2=3, \
-            steplen_alpha=0.02, steplen_beta = 0, steplen_theta=-0.02):
-    #### Initial parameters and class ####
-    alpha,beta, theta = simClass.get_parameters()
-
-    aggr_output_of_cv = {}
-    #### parameter training iteration ####
-    for i in range(iteration1):
-        print("############################# %dth K-Cross Validation ###############################"%(i))
-
-        #### Modify parameters for each iteration ####
-        alpha = alpha + steplen_alpha
-        beta = beta * steplen_beta
-        theta = theta + steplen_theta
-        simClass.change_parameters(alpha, beta, theta)
-
-        start = 0
-        end = int(itemsFrame.shape[0]/iteration2)
-        RMSE = []
-        #### CV iteration ####
-        for j in range(iteration2):
-            print("---------- %dth fold of curent CV, %dth Iteration ----------"%(j,i))
-            #print("%d-fold> "%j)
-            #### Calculate the RMSE for this iteration ####         
-            RMSE.append(active_learning(simClass, start, end, simItem_k, topUser_k, itemsFrame, ratingsFrame, users_rating))
-            start = end
-            end = end + int(itemsFrame.shape[0]/iteration2)
-
-
-        #### Caculate and record average RMSE for each iteration2 ####
-        aggr_output_of_cv[i] = {'avg_RMSE': sum(RMSE)/len(RMSE), 'alpha': alpha,'beta':beta, 'theta': theta}
-        print(aggr_output_of_cv[i])
-
-    #### Find best RMSE and best parameters####
-    avg_rmse_lst = [aggr_output_of_cv[i]['avg_RMSE'] for i in aggr_output_of_cv]
-    index = avg_rmse_lst.index(min(avg_rmse_lst))
-
     return aggr_output_of_cv, index
 	
 def active_learning(simClass, start, end, simItem_k, topUser_k, itemsFrame, ratingsFrame, users_rating):

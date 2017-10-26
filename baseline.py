@@ -10,13 +10,6 @@ print(check_output(["dir", "."], shell=True).decode("utf8"))
 import tool_function as tf
 from similarity import Similarity
 from matrix_factorization import MatrixFactorization
-#### spark package ####
-from pyspark.sql import SparkSession
-spark = SparkSession \
-    .builder \
-    .appName("Python Spark SQL basic example") \
-    .config("spark.some.config.option", "some-value") \
-    .getOrCreate()
 ####################################################################################
 
 ####################################################################################
@@ -76,7 +69,7 @@ steplen_theta= 0
 steplen_beta= 2
 iteration1 = 20
 iteration2 = 3
-model, optim_ind = call_CV(simClass, simItem_k, topUser_k, \
+model, optim_ind = tf.call_CV(simClass, simItem_k, topUser_k, \
                            itemsFrame[0 : CV_end], \
                            ratingsFrame[0 : ratingFrame_end], \
                            users_rating,\
