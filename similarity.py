@@ -101,7 +101,6 @@ class Similarity:
 				}
 		'''
 		#### original data ####
-		price_list = np.array(self.data['price']).tolist()
 		number_list = np.array(self.data['asin']).tolist()
 		#### tf-idf result ####
 		self.title_result = self.cal_tf_idf(self.data_preprocess(np.array(self.data['title']).tolist()))
@@ -128,9 +127,9 @@ class Similarity:
 		self.description_result = cosine_similarity(self.description_result, self.description_result)
 		#### price result ####
 		'''self.price_result: [p1, p2, p3, ... , pn]'''
-		self.price_result = [1.0 / (1+math.exp(-self.beta*(price_list[i]))) for i in range(len(price_list))]
+		self.price_result = np.array(self.data['price']).tolist()
 
-		self.item_num = len(price_list)
+		self.item_num = len(self.price_result)
 		self.item_vector_set = {n:{'title':t, 'description':d, 'price':p} for n,t,d,p in zip(number_list, self.title_result, self.description_result, self.price_result)}
 
 	# def generate_item_vector_for_newitem(self, new_item):
@@ -171,6 +170,9 @@ class Similarity:
 	# 		return 0.0
 	# 	else:
 	# 		return dot_product / ((normA*normB)**0.5)
+
+	def sigmoid(self, x):
+		return 1.0 / (1+math.exp(-self.beta*x))
 
 	def generate_topk_item_similarity(self, new_asin, k, target_user_list):
 		''' return cosine similarity matrix
@@ -214,7 +216,7 @@ class Similarity:
 			for train_key, train_value in train_item_vec_set.items():
 				value = self.item_vector_set[new_key]['title'][train_value] \
 							+ self.alpha*self.item_vector_set[new_key]['description'][train_value] \
-							+ self.theta*(np.abs(self.price_result[train_value]-new_value['price']))
+							+ self.theta*(np.abs(self.sigmoid(self.price_result[train_value]) - self.sigmoid(new_value['price'])))
 				ret_k_similarities.append([value, train_key])
 			ret_k_similarities = sorted(ret_k_similarities, key=lambda x:x[0], reverse=True)
 			ret_k_similarities_dict_one = {ret_k_similarities[i][1]:ret_k_similarities[i][0] for i in range(len(ret_k_similarities)) if i <= k-1}
