@@ -8,14 +8,17 @@ from pyspark.sql import SparkSession
 
 
 class MatrixFactorization:
-    def __init__(self, maxIter=15, regParam=0.01):
+    def __init__(self, maxIter=15, regParam=0.01, rank=10):
         self.maxIter = maxIter
         self.regParam = regParam
         self.spark = SparkSession \
             .builder \
-            .appName("Python Spark SQL basic example") \
-            .config("spark.some.config.option", "some-value") \
+            .master("local[*]") \
+            .appName("Example") \
             .getOrCreate()
+
+            # SparkSession.builder.master("local[*]").appName("Example").getOrCreate()
+
     def matrix_factorization(self, train_lst, test_lst):
         train_df = self.spark.createDataFrame(train_lst, ["userID", "itemID", "rating"])
         test_df = self.spark.createDataFrame(test_lst, ["userID", "itemID", "rating"])
